@@ -1,0 +1,268 @@
+{% extends 'layout.html' %} 
+
+{% block title %}Nuestros Productos{% endblock %}
+
+{% block content %}
+    <div class="bg-white p-8 rounded-lg shadow-xl mb-10">
+        <h2 class="text-4xl font-extrabold text-gray-800 mb-6 text-center">
+            Nuestra Deliciosa Seleccion Saludable
+        </h2>
+
+        {% if request.args.get('success') %}
+            <div class="mb-6 p-3 rounded-md bg-green-100 text-green-800">
+                {{ request.args.get('success') }}
+            </div>
+        {% endif %}
+        {% if request.args.get('error') %}
+            <div class="mb-6 p-3 rounded-md bg-red-100 text-red-800">
+                {{ request.args.get('error') }}
+            </div>
+        {% endif %}
+
+        <div class="mb-8 p-6 bg-gray-50 rounded-lg shadow-inner">
+            <h3 class="text-2xl font-bold text-gray-700 mb-4">Filtrar por Preferencia:</h3>
+            <form action="{{ url_for('products') }}" method="GET" class="flex flex-wrap gap-4 items-center">
+                <label class="inline-flex items-center cursor-pointer text-lg text-gray-700">
+                    <input type="checkbox" name="vegetariano" value="1" class="form-checkbox h-5 w-5 text-green-600 rounded-md" {% if filters.vegetariano %}checked{% endif %}>
+                    <span class="ml-2">Vegetariano</span>
+                </label>
+
+                <label class="inline-flex items-center cursor-pointer text-lg text-gray-700">
+                    <input type="checkbox" name="vegano" value="1" class="form-checkbox h-5 w-5 text-green-600 rounded-md" {% if filters.vegano %}checked{% endif %}>
+                    <span class="ml-2">Vegano</span>
+                </label>
+
+                <label class="inline-flex items-center cursor-pointer text-lg text-gray-700">
+                    <input type="checkbox" name="sin_tacc" value="1" class="form-checkbox h-5 w-5 text-green-600 rounded-md" {% if filters.sin_tacc %}checked{% endif %}>
+                    <span class="ml-2">Sin TACC</span>
+                </label>
+
+                <button type="submit" class="ml-auto px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
+                    Aplicar Filtros
+                </button>
+                
+                <a href="{{ url_for('products') }}" class="px-5 py-2 bg-gray-300 text-gray-800 font-semibold rounded-lg shadow-md hover:bg-gray-400 transition duration-300">
+                    Limpiar Filtros
+                </a>
+            </form>
+        </div>
+
+        {% if products %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for product in products %}
+                    <div class="product-card bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer" 
+                         data-id="{{ product.id }}"
+                         data-name="{{ product.nombre | e }}"
+                         data-description="{{ product.descripcion | e }}"
+                         data-price="{{ product.precio }}"
+                         data-nutritional-info="{{ product.informacion_nutricional | default('') | e }}"
+                         data-vegetarian="{{ product.es_vegetariano }}"
+                         data-vegan="{{ product.es_vegano }}"
+                         data-sin-tacc="{{ product.es_sin_tacc }}">
+                        
+                        <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500 text-center text-lg font-semibold">
+                            Producto Healthy Bite
+                        </div>
+                        
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">{{ product.nombre }}</h3>
+                            <p class="text-gray-600 text-sm mb-3 truncate">{{ product.descripcion }}</p>
+                            
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                {% if product.es_vegetariano %}
+                                    <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Vegetariano</span>
+                                {% endif %}
+                                {% if product.es_vegano %}
+                                    <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Vegano</span>
+                                {% endif %}
+                                {% if product.es_sin_tacc %}
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Sin TACC</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="flex justify-between items-center">
+                                <span class="text-2xl font-bold text-green-700">${{ product.precio | int }}</span>
+                                <button class="open-modal-btn px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
+                                        onclick="event.stopPropagation();">
+                                    Ver Detalles
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center p-10 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                <p class="text-2xl font-semibold text-gray-700 mb-4">
+                    No se encontraron productos que coincidan con los filtros seleccionados.
+                </p>
+            </div>
+        {% endif %}
+
+        <div class="mt-10 text-center">
+            <a href="{{ url_for('view_cart') }}" class="inline-flex items-center px-8 py-4 border border-transparent text-lg font-bold rounded-md shadow-lg text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.182 1.767.809 1.767H19m-4 0a1 1 0 110-2 1 1 0 010 2zm-4 0a1 1 0 110-2 1 1 0 010 2z" />
+                </svg>
+                Ir al Carrito y Checkout
+            </a>
+        </div>
+    </div>
+
+    <div id="productModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl overflow-hidden animate-fade-in-up">
+            <div class="flex justify-between items-center border-b p-4">
+                <h3 id="modalProductName" class="text-3xl font-bold text-gray-800"></h3>
+                <button onclick="closeProductModal()" class="text-gray-500 hover:text-gray-700 text-4xl leading-none">&times;</button>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[80vh]">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-400 text-lg rounded-md">
+                        Imagen del Producto
+                    </div>
+                </div>
+
+                <p id="modalProductDescription" class="text-gray-700 mb-4 text-lg"></p>
+                <p id="modalProductNutritionalInfo" class="text-gray-600 text-sm italic mb-4"></p>
+                
+                <div id="modalProductPreferences" class="flex flex-wrap gap-2 mb-4">
+                </div>
+
+                <div class="flex justify-between items-center mb-6">
+                    <span id="modalProductPrice" class="text-4xl font-bold text-green-700"></span>
+                    <form id="addToCartForm" action="{{ url_for('add_to_cart') }}" method="POST" class="flex items-center">
+                        <input type="hidden" name="product_id" id="modalProductId">
+                        <input type="number" name="quantity" id="modalProductQuantity" value="1" min="1" class="w-20 text-center border border-gray-300 rounded-md py-2 text-lg mr-3 focus:ring-green-500 focus:border-green-500">
+                        <button type="submit" class="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300">
+                            Añadir al Carrito
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        const productModal = document.getElementById('productModal');
+        const modalProductName = document.getElementById('modalProductName');
+        const modalProductDescription = document.getElementById('modalProductDescription');
+        const modalProductNutritionalInfo = document.getElementById('modalProductNutritionalInfo');
+        const modalProductPreferences = document.getElementById('modalProductPreferences');
+        const modalProductPrice = document.getElementById('modalProductPrice');
+        const modalProductId = document.getElementById('modalProductId');
+        const modalProductQuantity = document.getElementById('modalProductQuantity');
+
+        function closeProductModal() {
+            if (productModal) { 
+                productModal.classList.add('hidden'); 
+                document.body.classList.remove('overflow-hidden'); 
+            }
+        }
+
+        if (productModal) { 
+            productModal.addEventListener('click', (event) => {
+                if (event.target === productModal) { 
+                    closeProductModal();
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const productCards = document.querySelectorAll('.product-card'); 
+            productCards.forEach(card => {
+                card.addEventListener('click', (event) => {
+                    const id = card.dataset.id;
+                    const name = card.dataset.name;
+                    const description = card.dataset.description;
+                    const price = card.dataset.price;
+                    const nutritionalInfo = card.dataset.nutritionalInfo;
+                    const isVegetarian = card.dataset.vegetarian;
+                    const isVegan = card.dataset.vegan;
+                    const isSinTacc = card.dataset.sinTacc;
+
+                    modalProductId.value = id;
+                    modalProductName.textContent = name;
+                    
+                    modalProductDescription.textContent = description;
+                    
+                    if (nutritionalInfo && nutritionalInfo.trim() !== '') {
+                        modalProductNutritionalInfo.textContent = `Información Nutricional: ${nutritionalInfo}`;
+                        modalProductNutritionalInfo.style.display = 'block';
+                    } else {
+                        modalProductNutritionalInfo.textContent = '';
+                        modalProductNutritionalInfo.style.display = 'none';
+                    }
+                    
+                    modalProductPrice.textContent = `$${parseFloat(price).toFixed(2)}`; 
+                    
+                    modalProductPreferences.innerHTML = ''; 
+                    if (isVegetarian === '1') { 
+                        modalProductPreferences.innerHTML += '<span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Vegetariano</span> ';
+                    }
+                    if (isVegan === '1') {
+                        modalProductPreferences.innerHTML += '<span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Vegano</span> ';
+                    }
+                    if (isSinTacc === '1') {
+                        modalProductPreferences.innerHTML += '<span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Sin TACC</span>';
+                    }
+                    
+                    modalProductQuantity.value = 1; 
+                    
+                    productModal.classList.remove('hidden'); 
+                    document.body.classList.add('overflow-hidden'); 
+                });
+            });
+
+            const openModalButtons = document.querySelectorAll('.open-modal-btn');
+            openModalButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const card = event.target.closest('.product-card');
+                    if (card) {
+                        const id = card.dataset.id;
+                        const name = card.dataset.name;
+                        const description = card.dataset.description;
+                        const price = card.dataset.price;
+                        const nutritionalInfo = card.dataset.nutritionalInfo;
+                        const isVegetarian = card.dataset.vegetarian;
+                        const isVegan = card.dataset.vegan;
+                        const isSinTacc = card.dataset.sinTacc;
+
+                        modalProductId.value = id;
+                        modalProductName.textContent = name;
+                        modalProductDescription.textContent = description;
+                        
+                        if (nutritionalInfo && nutritionalInfo.trim() !== '') {
+                            modalProductNutritionalInfo.textContent = `Información Nutricional: ${nutritionalInfo}`;
+                            modalProductNutritionalInfo.style.display = 'block';
+                        } else {
+                            modalProductNutritionalInfo.textContent = '';
+                            modalProductNutritionalInfo.style.display = 'none';
+                        }
+                        
+                        modalProductPrice.textContent = `$${parseFloat(price).toFixed(2)}`; 
+                        
+                        modalProductPreferences.innerHTML = ''; 
+                        if (isVegetarian === '1') { 
+                            modalProductPreferences.innerHTML += '<span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Vegetariano</span> ';
+                        }
+                        if (isVegan === '1') {
+                            modalProductPreferences.innerHTML += '<span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Vegano</span> ';
+                        }
+                        if (isSinTacc === '1') {
+                            modalProductPreferences.innerHTML += '<span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Sin TACC</span>';
+                        }
+                        
+                        modalProductQuantity.value = 1; 
+                        
+                        productModal.classList.remove('hidden'); 
+                        document.body.classList.add('overflow-hidden'); 
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

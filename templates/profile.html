@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="flex justify-center items-start">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+        <h2 class="text-3xl font-bold text-center mb-6 text-green-700">Mi Perfil</h2>
+        
+        {% if error_message %}
+            <div class="p-4 mb-3 rounded-lg shadow-sm font-bold text-center bg-red-100 border-l-4 border-red-500 text-red-700">
+                <p>{{ error_message }}</p>
+            </div>
+        {% elif success_message %}
+            <div class="p-4 mb-3 rounded-lg shadow-sm font-bold text-center bg-green-100 border-l-4 border-green-500 text-green-700">
+                <p>{{ success_message }}</p>
+            </div>
+        {% endif %}
+
+        <form action="{{ url_for('profile') }}" method="POST">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="mb-4">
+                    <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Usuario:</label>
+                    <input type="text" id="username" name="username" value="{{ user.username }}" readonly disabled
+                           class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-500 bg-gray-100 leading-tight">
+                </div>
+                <div class="mb-4">
+                    <label for="nombre" class="block text-gray-700 text-sm font-bold mb-2">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" value="{{ user.nombre }}" required
+                           class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                </div>
+                <div class="mb-4">
+                    <label for="apellido" class="block text-gray-700 text-sm font-bold mb-2">Apellido:</label>
+                    <input type="text" id="apellido" name="apellido" value="{{ user.apellido }}" required
+                           class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                </div>
+                <div class="mb-4">
+                    <label for="telefono" class="block text-gray-700 text-sm font-bold mb-2">Telefono:</label>
+                    <input type="text" id="telefono" name="telefono" value="{{ user.telefono }}"
+                           class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                </div>
+                <div class="mb-4 col-span-full">
+                    <label for="direccion" class="block text-gray-700 text-sm font-bold mb-2">Direccion:</label>
+                    <input type="text" id="direccion" name="direccion" value="{{ user.direccion }}"
+                           class="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                </div>
+            </div>
+            <div class="flex items-center justify-between">
+                <button type="submit"
+                        class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline transition-colors w-full">
+                    Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

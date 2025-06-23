@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Panel de Administracion{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+<body class="bg-gray-50 font-sans leading-normal tracking-normal">
+    <header class="bg-blue-700 text-white p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-extrabold tracking-wide">
+                <a href="{{ url_for('admin_dashboard') }}" class="text-white no-underline hover:text-gray-200 transition duration-200">Healthy Bites Admin</a>
+            </h1>
+            <nav>
+                <ul class="flex space-x-6 text-lg">
+                    <li><a href="{{ url_for('admin_dashboard') }}" class="hover:text-gray-200 transition duration-200">Dashboard</a></li>
+                    <li><a href="{{ url_for('admin_products') }}" class="hover:text-gray-200 transition duration-200">Gestion de Productos</a></li>
+                    <li><a href="{{ url_for('logout') }}" class="hover:text-gray-200 transition duration-200">Cerrar Sesion</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto mt-8 p-6 bg-white rounded-xl shadow-2xl">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="mt-16 p-6 text-center text-gray-500 text-sm">
+        <p>&copy; 2025 Healthy Bites Admin.</p>
+    </footer>
+</body>
+</html>

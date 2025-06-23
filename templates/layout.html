@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthyBite - {% block title %}{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 flex flex-col min-h-screen">
+    <header class="bg-green-700 text-white p-4 shadow-md rounded-b-lg">
+        <nav class="container mx-auto flex justify-between items-center">
+            <a href="{{ url_for('dashboard') }}" class="text-2xl font-bold rounded-full px-3 py-1 bg-green-600 hover:bg-green-500 transition-colors">
+                <i class="fas fa-leaf mr-2"></i>Healthy Bites
+            </a>
+            <ul class="flex space-x-6">
+                {% if session.get('user_id') %}
+                    <li><a href="{{ url_for('dashboard') }}" class="hover:text-green-200 transition-colors flex items-center"><i class="fas fa-home mr-1"></i> Inicio</a></li>
+                    <li><a href="{{ url_for('products') }}" class="hover:text-green-200 transition-colors flex items-center"><i class="fas fa-utensils mr-1"></i> Productos</a></li>
+                    <li><a href="{{ url_for('orders') }}" class="hover:text-green-200 transition-colors flex items-center"><i class="fas fa-history mr-1"></i> Mis Pedidos</a></li>
+                    <li><a href="{{ url_for('profile') }}" class="hover:text-green-200 transition-colors flex items-center"><i class="fas fa-user mr-1"></i> Perfil</a></li>
+                    <li><a href="{{ url_for('logout') }}" class="hover:text-green-200 transition-colors flex items-center"><i class="fas fa-sign-out-alt mr-1"></i> Cerrar Sesion</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}" class="hover:text-green-200 transition-colors flex items-center"><i class="fas fa-sign-in-alt mr-1"></i> Iniciar Sesion</a></li>
+                    <li><a href="{{ url_for('register') }}" class="hover:text-green-200 transition-colors flex items-center"><i class="fas fa-user-plus mr-1"></i> Registrarse</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container mx-auto mt-8 p-6 flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-800 text-white p-4 mt-8 rounded-t-lg shadow-inner text-center">
+        <p>&copy; 2025 HealthyBite.</p>
+    </footer>
+
+    {% block scripts %}{% endblock %} 
+
+</body>
+</html>
