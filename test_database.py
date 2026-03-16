@@ -14,7 +14,7 @@ class TestDatabaseFunctions(unittest.TestCase):
         if os.path.exists(self.db_path):
             os.remove(self.db_path)
 
-#crear tablas
+#Si se crean las tablas
     def test_01(self):
         conn = db_helper.get_db_connection(self.db_path)
         cursor = conn.cursor()
@@ -25,8 +25,8 @@ class TestDatabaseFunctions(unittest.TestCase):
         conn.close()
 #insertar datos
     def test_02(self):
-        username = "testuser"
-        password_hash = "hashed_password_example"
+        username = "usuario"
+        password_hash = "contrasenia"
         nombre = "Xavi"
         apellido = "Valls"
 
